@@ -1149,4 +1149,61 @@ class OC_Util {
 		}
 		return $version;
 	}
+
+	/**
+	 * Split the given string in chunks of numbers and strings
+	 * @param string $t string
+	 * @return array of strings and number chunks
+	 */
+	private static function naturalSortChunkify($t) {
+		// Adapted and proted to PHP from
+		// http://my.opera.com/GreyWyvern/blog/show.dml/1671288
+		$tz = array();
+		$x = 0;
+		$y = -1;
+		$n = null;
+		$length = strlen($t);
+
+		while ($x < $length) {
+			$c = $t[$x];
+			$m = ($c === '.' || ($c >= '0' && $c <= '9'));
+			if ($m !== $n) {
+				// next chunk
+				$y++;
+				$tz[$y] = '';
+				$n = $m;
+			}
+			$tz[$y] .= $c;
+			$x++;
+		}
+		return $tz;
+	}
+
+	/**
+	 * Compare two strings to provide a natural sort
+	 * @param $a first string to compare
+	 * @param $b second string to compare
+	 * @return -1 if $b comes before $a, 1 if $a comes before $b
+	 * or 0 if the strings are identical
+	 */
+	public static function naturalSortCompare($a, $b) {
+		$aa = self::naturalSortChunkify($a);
+		$bb = self::naturalSortChunkify($b);
+		$alen = count($aa);
+		$blen = count($bb);
+
+		for ($x = 0; $x < $alen && $x < $blen; $x++) {
+			$aChunk = $aa[$x];
+			$bChunk = $bb[$x];
+			if ($aChunk !== $bChunk) {
+				if (is_int($aChunk) && is_int($bChunk)) {
+					$aNum = (int)$aChunk;
+					$bNum = (int)$bChunk;
+					return $aNum - $bNum;
+				}
+				return strnatcasecmp($aChunk, $bChunk);
+			}
+		}
+		return $alen - $blen;
+	}
 }

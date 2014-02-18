@@ -277,6 +277,7 @@ describe('Core base tests', function() {
 
 	});
 	describe('naturalSortCompare', function() {
+		// must provide the same results as \OC_Util::naturalSortCompare
 		it('sorts alphabetically', function() {
 			var a = [
 				'def',
@@ -321,9 +322,12 @@ describe('Core base tests', function() {
 				'def (10).txt',
 				'abc10',
 				'def (12).txt',
+				'z',
 				'ghi.txt',
+				'za',
 				'ghi 1.txt',
-				'ghi 12.txt'
+				'ghi 12.txt',
+				'zz'
 			];
 			a.sort(OC.Util.naturalSortCompare);
 			expect(a).toEqual([
@@ -343,7 +347,10 @@ describe('Core base tests', function() {
 				'ghi 1.txt',
 				'ghi 2.txt',
 				'ghi 10.txt',
-				'ghi 12.txt'
+				'ghi 12.txt',
+				'z',
+				'za',
+				'zz'
 			]);
 		});
 		it('sorts with chinese characters', function() {
