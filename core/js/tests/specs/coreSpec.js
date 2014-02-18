@@ -307,25 +307,43 @@ describe('Core base tests', function() {
 		});
 		it('sorts with numbers', function() {
 			var a = [
-				'def (2).txt',
-				'abc 2',
-				'abc',
-				'def.txt',
-				'abc 1',
-				'def (1).txt',
 				'124.txt',
-				'123.txt'
+				'abc1',
+				'123.txt',
+				'abc',
+				'abc2',
+				'def (2).txt',
+				'ghi 10.txt',
+				'abc12',
+				'def.txt',
+				'def (1).txt',
+				'ghi 2.txt',
+				'def (10).txt',
+				'abc10',
+				'def (12).txt',
+				'ghi.txt',
+				'ghi 1.txt',
+				'ghi 12.txt'
 			];
 			a.sort(OC.Util.naturalSortCompare);
 			expect(a).toEqual([
 				'123.txt',
 				'124.txt',
 				'abc',
-				'abc 1',
-				'abc 2',
+				'abc1',
+				'abc2',
+				'abc10',
+				'abc12',
 				'def.txt',
 				'def (1).txt',
-				'def (2).txt'
+				'def (2).txt',
+				'def (10).txt',
+				'def (12).txt',
+				'ghi.txt',
+				'ghi 1.txt',
+				'ghi 2.txt',
+				'ghi 10.txt',
+				'ghi 12.txt'
 			]);
 		});
 		it('sorts with chinese characters', function() {
