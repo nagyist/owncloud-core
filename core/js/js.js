@@ -951,6 +951,50 @@ function relative_modified_date(timestamp) {
 }
 
 /**
+ * Utility functions
+ */
+OC.Util = {
+	/**
+	 * Compare two strings to provide a natural sort
+	 * @param a first string to compare
+	 * @param b second string to compare
+	 * @return -1 if b comes before a, 1 if a comes before b
+	 * or 0 if the strings are identical
+	 */
+	naturalSortCompare: function(a, b) {
+		// From http://my.opera.com/GreyWyvern/blog/show.dml/1671288
+		function chunkify(t) {
+			var tz = [], x = 0, y = -1, n = 0, i, j;
+
+			while (i = (j = t.charAt(x++)).charCodeAt(0)) {
+			var m = (i === 46 || (i >=48 && i <= 57));
+			if (m !== n) {
+				tz[++y] = "";
+				n = m;
+			}
+			tz[y] += j;
+			}
+			return tz;
+		}
+
+		var aa = chunkify(a);
+		var bb = chunkify(b);
+
+		for (x = 0; aa[x] && bb[x]; x++) {
+			if (aa[x] !== bb[x]) {
+			var c = Number(aa[x]), d = Number(bb[x]);
+			if (c === aa[x] && d === bb[x]) {
+				return c - d;
+			} else {
+				return aa[x].localeCompare(bb[x]);
+			}
+			}
+		}
+		return aa.length - bb.length;
+	},
+}
+
+/**
  * get a variable by name
  * @param string name
  */

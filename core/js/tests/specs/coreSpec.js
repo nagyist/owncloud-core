@@ -276,5 +276,128 @@ describe('Core base tests', function() {
 		});
 
 	});
+	describe('naturalSortCompare', function() {
+		it('sorts alphabetically', function() {
+			var a = [
+				'def',
+				'xyz',
+				'abc'
+			];
+			a.sort(OC.Util.naturalSortCompare);
+			expect(a).toEqual([
+				'abc',
+				'def',
+				'xyz'
+			]);
+		});
+		it('sorts with different casing', function() {
+			var a = [
+				'aaa',
+				'bbb',
+				'BBB',
+				'AAA'
+			];
+			a.sort(OC.Util.naturalSortCompare);
+			expect(a).toEqual([
+				'aaa',
+				'AAA',
+				'bbb',
+				'BBB'
+			]);
+		});
+		it('sorts with numbers', function() {
+			var a = [
+				'def (2).txt',
+				'abc 2',
+				'abc',
+				'def.txt',
+				'abc 1',
+				'def (1).txt',
+				'124.txt',
+				'123.txt'
+			];
+			a.sort(OC.Util.naturalSortCompare);
+			expect(a).toEqual([
+				'123.txt',
+				'124.txt',
+				'abc',
+				'abc 1',
+				'abc 2',
+				'def.txt',
+				'def (1).txt',
+				'def (2).txt'
+			]);
+		});
+		it('sorts with chinese characters', function() {
+			var a = [
+				'十.txt',
+				'一.txt',
+				'二.txt',
+				'十 2.txt',
+				'三.txt',
+				'四.txt',
+				'abc.txt',
+				'五.txt',
+				'七.txt',
+				'八.txt',
+				'九.txt',
+				'六.txt',
+				'十一.txt',
+				'波.txt',
+				'破.txt',
+				'莫.txt',
+				'啊.txt',
+				'123.txt'
+			];
+			a.sort(OC.Util.naturalSortCompare);
+			expect(a).toEqual([
+				'123.txt',
+				'abc.txt',
+				'一.txt',
+				'七.txt',
+				'三.txt',
+				'九.txt',
+				'二.txt',
+				'五.txt',
+				'八.txt',
+				'六.txt',
+				'十.txt',
+				'十 2.txt',
+				'十一.txt',
+				'啊.txt',
+				'四.txt',
+				'波.txt',
+				'破.txt',
+				'莫.txt'
+			]);
+		});
+		it('sorts with umlauts', function() {
+			var a = [
+				'öh.txt',
+				'Äh.txt',
+				'oh.txt',
+				'Üh 2.txt',
+				'Üh.txt',
+				'ah.txt',
+				'Öh.txt',
+				'uh.txt',
+				'üh.txt',
+				'äh.txt'
+			];
+			a.sort(OC.Util.naturalSortCompare);
+			expect(a).toEqual([
+				'ah.txt',
+				'äh.txt',
+				'Äh.txt',
+				'oh.txt',
+				'öh.txt',
+				'Öh.txt',
+				'uh.txt',
+				'üh.txt',
+				'Üh.txt',
+				'Üh 2.txt'
+			]);
+		});
+	});
 });
 
