@@ -13,6 +13,7 @@ class OC_Util {
 	private static $fsSetup=false;
 	public static $coreStyles=array();
 	public static $coreScripts=array();
+	private static $collator;
 
 	/**
 	 * @brief Can be set up
@@ -1180,6 +1181,19 @@ class OC_Util {
 	}
 
 	/**
+	 * Returns the string collator
+	 * @return Collator string collator
+	 */
+	private static function getCollator() {
+		// this makes it work correctly with characters
+		// like German umlauts
+		if (!isset(self::$collator)) {
+			self::$collator = new Collator(null);
+		}
+		return self::$collator;
+	}
+
+	/**
 	 * Compare two strings to provide a natural sort
 	 * @param $a first string to compare
 	 * @param $b second string to compare
@@ -1187,6 +1201,10 @@ class OC_Util {
 	 * or 0 if the strings are identical
 	 */
 	public static function naturalSortCompare($a, $b) {
+		// Needed because PHP doesn't sort correctly when numbers are enclosed in
+		// parenthesis, even with NUMERIC_COLLATION enabled.
+		// For example it gave ["test (2).txt", "test.txt"]
+		// instead of ["test.txt", "test (2).txt"]
 		$aa = self::naturalSortChunkify($a);
 		$bb = self::naturalSortChunkify($b);
 		$alen = count($aa);
@@ -1196,12 +1214,12 @@ class OC_Util {
 			$aChunk = $aa[$x];
 			$bChunk = $bb[$x];
 			if ($aChunk !== $bChunk) {
-				if (is_int($aChunk) && is_int($bChunk)) {
+				if (is_numeric($aChunk) && is_numeric($bChunk)) {
 					$aNum = (int)$aChunk;
 					$bNum = (int)$bChunk;
 					return $aNum - $bNum;
 				}
-				return strnatcasecmp($aChunk, $bChunk);
+				return self::getCollator()->compare($aChunk, $bChunk);
 			}
 		}
 		return $alen - $blen;
