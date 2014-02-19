@@ -277,6 +277,13 @@ describe('Core base tests', function() {
 
 	});
 	describe('naturalSortCompare', function() {
+		// cit() will skip tests if running on PhantomJS because it has issues with
+		// localeCompare(). See https://github.com/ariya/phantomjs/issues/11063
+		//
+		// Please make sure to run these tests in Chrome/Firefox manually
+		// to make sure they run.
+		var cit = window.isPhantom?xit:it;
+
 		// must provide the same results as \OC_Util::naturalSortCompare
 		it('sorts alphabetically', function() {
 			var a = [
@@ -291,7 +298,7 @@ describe('Core base tests', function() {
 				'xyz'
 			]);
 		});
-		it('sorts with different casing', function() {
+		cit('sorts with different casing', function() {
 			var a = [
 				'aaa',
 				'bbb',
@@ -396,7 +403,7 @@ describe('Core base tests', function() {
 				'莫.txt'
 			]);
 		});
-		it('sorts with umlauts', function() {
+		cit('sorts with umlauts', function() {
 			var a = [
 				'öh.txt',
 				'Äh.txt',

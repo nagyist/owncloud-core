@@ -64,6 +64,8 @@ window.oc_config = {
 	session_keepalive: false
 };
 
+window.isPhantom = /phantom/i.test(navigator.userAgent);
+
 // global setup for all tests
 (function setupTests() {
 	var fakeServer = null,
