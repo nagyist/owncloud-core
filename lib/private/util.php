@@ -1185,10 +1185,10 @@ class OC_Util {
 	 * @return Collator string collator
 	 */
 	private static function getCollator() {
-		// this makes it work correctly with characters
-		// like German umlauts
 		if (!isset(self::$collator)) {
-			self::$collator = new Collator(null);
+			// looks like the default is en_US_POSIX which yields wrong sorting with
+			// German umlauts, so using en_US instead
+			self::$collator = new Collator('en_US');
 		}
 		return self::$collator;
 	}
