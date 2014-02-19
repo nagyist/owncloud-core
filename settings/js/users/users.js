@@ -135,6 +135,13 @@ var UserList = {
 		}
 		tr.find('td.lastLogin').text(lastLogin);
 		$(tr).appendTo('tbody');
+		if(UserList.isEmpty === true) {
+			//when the list was emptied, one row was left, necessary to keep
+			//add working and the layout unbroken. We need to remove this item
+			tr.show();
+			$('tbody tr').first().remove();
+			UserList.isEmpty = false;
+		}
 		if (sort) {
 			UserList.doSort();
 		}
@@ -201,12 +208,22 @@ var UserList = {
 			$('tbody').append(items);
 		}
 	},
-	update: function () {
+	empty: function() {
+		//one row needs to be kept, because it is cloned to add new rows
+		$('tbody tr:not(:first)').remove();
+		$('tbody tr').first().hide();
+		UserList.isEmpty = true;
+		UserList.offset = 0;
+	},
+	update: function (gid) {
 		if (UserList.updating) {
 			return;
 		}
 		UserList.updating = true;
-		$.get(OC.Router.generate('settings_ajax_userlist', { offset: UserList.offset, limit: UserList.usersToLoad }), function (result) {
+		if(gid === undefined) {
+			gid = '';
+		}
+		$.get(OC.Router.generate('settings_ajax_userlist', { offset: UserList.offset, limit: UserList.usersToLoad, gid: gid }), function (result) {
 			if (result.status === 'success') {
 				//The offset does not mirror the amount of users available,
 				//because it is backend-dependent. For correct retrieval,
@@ -220,7 +237,7 @@ var UserList = {
 					if (index === 9) {
 						$(tr).bind('inview', function (event, isInView, visiblePartX, visiblePartY) {
 							$(this).unbind(event);
-							UserList.update();
+							UserList.update(gid);
 						});
 					}
 				});
@@ -451,6 +468,15 @@ $(document).ready(function () {
 				select.find(':selected').text(returnedQuota);
 			}
 		});
+	});
+
+	// click on group name
+	// FIXME: also triggered when clicking on "remove"
+	$('ul').on('click', 'li', function (event) {
+		var li = $(this);
+		var gid = $(li).attr('data-gid');
+		// Call function for handling delete/undo on Groups
+		GroupList.showGroup(gid);
 	});
 
 	$('#newuser').submit(function (event) {
